@@ -8,9 +8,7 @@
 
 ### **Proceso de conexión y comunicación entre Micro:bit y p5.js**  
 
-Para esta actividad, se utilizó **p5.js** para generar un gráfico interactivo y un **Micro:bit** para enviar señales que modifican el comportamiento visual en la pantalla. La comunicación se realiza a través de la **Web Serial API**, lo que permite que el navegador reciba datos desde el Micro:bit cuando un botón es presionado.  
-
----
+Se utilizó **p5.js** para generar un gráfico interactivo y un **Micro:bit** para enviar señales que modifican el visual en la pantalla. 
 
 ### **1. Conectando el Micro:bit con p5.js**  
 1. **Programación del Micro:bit:**  
@@ -25,7 +23,7 @@ Para esta actividad, se utilizó **p5.js** para generar un gráfico interactivo 
    - Al hacer clic en `Conectar Micro:bit`, el navegador solicita acceso al puerto USB del Micro:bit.  
    - Una vez conectado, p5.js empieza a recibir datos enviados por el Micro:bit.  
 
----
+
 
 ### **2. Comunicación entre Micro:bit y p5.js**  
 - **Micro:bit:**  
@@ -33,7 +31,7 @@ Para esta actividad, se utilizó **p5.js** para generar un gráfico interactivo 
 - **p5.js:**  
   - Detecta el mensaje y ejecuta `serialEvent()`, que cambia el color del cuadrado en pantalla.  
 
----
+
 
 ### **3. Flujo de ejecución**  
 1. **Se presiona el botón "Conectar Micro:bit".**  
@@ -42,7 +40,6 @@ Para esta actividad, se utilizó **p5.js** para generar un gráfico interactivo 
 4. **p5.js recibe el mensaje y cambia el color del cuadrado.**  
 5. **El proceso se repite mientras la conexión esté activa.**  
 
----
 
-### **4. Conclusión**  
+
 Esta actividad permitió entender cómo usar la **Web Serial API** para conectar hardware con gráficos interactivos en p5.js. Se experimentó con la recepción de datos en tiempo real y su aplicación en la modificación de elementos visuales, combinando software y hardware de manera práctica. 🚀
