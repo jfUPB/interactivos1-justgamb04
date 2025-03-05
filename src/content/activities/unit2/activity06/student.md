@@ -84,32 +84,29 @@ function keyPressed() {
     }
 }
 ```
-#### Explicación del funcionamiento 
+## **Explicación del funcionamiento**  
 
-Este proyecto conecta un **Micro:bit** con una página web hecha en **p5.js**, permitiendo que el **Micro:bit envíe señales** cuando se presionan sus botones. La página web recibe estos datos y muestra diferentes imágenes en la pantalla.  
-
----
-
-#### Micro:bit – Envío de datos  
-- El código en **MicroPython** detecta cuándo se presionan los botones **A**, **B** o el **logo táctil**.  
-- Cuando se presiona un botón, se **muestra una imagen en la pantalla LED del micro:bit**.  
-- Luego, el **micro:bit envía un mensaje por serial** con el nombre de la imagen mostrada (por ejemplo, "HEART" si se presiona A).  
+Este proyecto conecta el **Micro:bit** con una página web usando **p5.js**. La idea es que cuando se presionen los botones del micro:bit, aparezcan diferentes imágenes en la pantalla LED y también se envíe un mensaje a la página web para que muestre algo relacionado.  
 
 ---
 
-#### Comunicación entre Micro:bit y la página web 
-- **El micro:bit y la computadora están conectados por USB**.  
-- El **micro:bit envía los datos en forma de texto (HEART, SMILE o GIRAFFE)** usando UART (puerto serial).  
-- La página web en **p5.js recibe estos datos** y cambia la imagen en la pantalla según el mensaje recibido.  
+### **1. Código en el Micro:bit**  
+En el micro:bit, se programan los botones **A**, **B** y el **logo táctil** para que muestren diferentes imágenes en la pantalla LED. Además, cuando se presiona uno de estos botones, el micro:bit **envía un mensaje por el puerto serial** con el nombre de la imagen que mostró, por ejemplo, "HEART" si se presiona A.  
 
 ---
 
-#### Visualización en p5.js  
-- En **p5.js**, un código interpreta los datos y **dibuja emojis** en la pantalla según lo que envía el Micro:bit.  
-- **Ejemplo:**  
-  - Si se recibe "HEART" → Se muestra un corazón ❤️.  
-  - Si se recibe "SMILE" → Se muestra una cara feliz 😊.  
-  - Si se recibe "GIRAFFE" → Se muestra una jirafa 🦒.  
-- Si no hay datos, aparece el mensaje: **"Presiona un botón"**.  
+### **2. Comunicación entre Micro:bit y la página web**  
+El micro:bit está **conectado por USB** a la computadora. Cuando se presiona un botón, se envía un mensaje por el puerto serial, que la página web en **p5.js recibe** y usa para cambiar lo que muestra en la pantalla.  
 
+---
 
+### **3. Lo que pasa en la página web (p5.js)**  
+El código en p5.js escucha los mensajes que manda el micro:bit y, según el mensaje recibido, **dibuja una imagen en la pantalla**.  
+
+Por ejemplo:  
+- Si llega el mensaje **"HEART"**, se muestra un corazón.  
+- Si llega **"SMILE"**, se dibuja una cara feliz.  
+- Si llega **"GIRAFFE"**, se muestra una jirafa.  
+- Si no hay datos, aparece un mensaje diciendo **"Presiona un botón"**.  
+
+---
