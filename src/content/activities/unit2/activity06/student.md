@@ -1,6 +1,3 @@
-
----
-
 #### Código en MicroPython (micro:bit)
 
 
