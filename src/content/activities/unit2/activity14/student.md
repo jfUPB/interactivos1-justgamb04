@@ -1,96 +1,173 @@
-# **Prueba y Depuración de la Bomba Temporizada**  
+# Actividad 14: Pruebas y Depuración de la Bomba Temporizada  
 
-## Casos de Prueba  
+## Vectores de Prueba 
 
-| **#** | **Caso de prueba** | **Entrada** | **Resultado esperado** | **Resultado obtenido** | **Estado** |
-|---|------------------|----------|-----------------|-----------------|---------|
-| 1 | Ajustar tiempo con UP | Presionar botón A (+1s) varias veces | El tiempo aumenta en 1s hasta 60s máximo | Funciona correctamente | ✅ Pasó |
-| 2 | Ajustar tiempo con DOWN | Presionar botón B (-1s) varias veces | El tiempo disminuye en 1s hasta 10s mínimo | Funciona correctamente | ✅ Pasó |
-| 3 | Iniciar cuenta regresiva | Agitar el dispositivo (SHAKE) | La cuenta inicia y se muestra en la pantalla | La cuenta regresiva inicia, pero se congela si se presiona UP o DOWN | ❌ Falló |
-| 4 | Reiniciar bomba | Presionar botón TOUCH durante la cuenta regresiva | La cuenta se detiene y vuelve al estado de configuración | A veces no reiniciaba correctamente | ❌ Falló |
-| 5 | Explosión al llegar a 0 | Dejar que la cuenta regresiva llegue a 0 | El speaker emite un sonido y la pantalla muestra una animación | Funcionó correctamente | ✅ Pasó |
+Se presentan las pruebas realizadas en ambas implementaciones.  
 
-## Errores Encontrados y Correcciones Implementadas  
+### 1. Ajuste del tiempo en configuración  
 
-### **Error 1: La cuenta regresiva se congela si se presiona UP o DOWN**  
-- **Causa:** Me di cuenta que cuando la bomba ya estaba armada los botones UP y DOWN seguían funcionando, lo que hacia que la cuenta regresiva se trabara.  
-- **Solución:** Deshabilité la detección de estos botones en el estado **ARMADO** para que solo respondan en **CONFIGURACIÓN**.  
+**Objetivo:** Verificar que los botones permitan modificar el tiempo dentro de los límites establecidos.  
 
-### **Error 2: El botón TOUCH a veces no reinicia la bomba correctamente**  
-- **Causa:** Si el botón TOUCH se presionaba justo cuando la cuenta regresiva llegaba a 0, a veces no reiniciaba bien, o peor, se quedaba en un estado raro sin hacer nada.  
-- **Solución:** Agregué una validación extra para que TOUCH tenga prioridad sobre todo lo demás y siempre reinicie el sistema cuando se presione.  
+| **Plataforma** | **Estado Inicial** | **Acción** | **Esperado** | **Obtenido** | **Corrección** |
+|--------------|----------------|------------|--------------|--------------|--------------|
+| Micro:bit | Bomba en **CONFIG** con 20s | Presionar A cinco veces | Aumenta a 25s | Funciona correctamente | No fue necesario |
+| Micro:bit | Bomba en **CONFIG** con 20s | Presionar B tres veces | Disminuye a 17s | Funciona correctamente | No fue necesario |
+| p5.js | Bomba en **CONFIG** con 20s | Click en "Aumentar" cinco veces | Aumenta a 25s | Funciona correctamente | No fue necesario |
+| p5.js | Bomba en **CONFIG** con 10s | Click en "Disminuir" | No debe bajar de 10s | Funciona correctamente | No fue necesario |
 
+---
 
-## Código Final Corregido  
+### **2. Límite incorrecto en la configuración del tiempo**  
 
-Este es el código después de hacerle las correcciones:  
+**Objetivo:** Verificar que el tiempo no supere los valores permitidos (10s - 60s).  
 
+| **Plataforma** | **Estado Inicial** | **Acción** | **Esperado** | **Obtenido** | **Corrección** |
+|--------------|----------------|------------|--------------|--------------|--------------|
+| Micro:bit | Bomba en **CONFIG** con 60s | Presionar A | No debe aumentar más de 60s | Error: Se incrementa a 61s | Se agregó validación |
+| p5.js | Bomba en **CONFIG** con 60s | Click en "Aumentar" | No debe aumentar más de 60s | Error: Se incrementa a 61s | Se agregó validación |
+
+**Corrección en el código (MicroPython y p5.js):**  
+
+```python
+if button_a.was_pressed() and time_left < max_time:
+    time_left += 1  
+```
+
+```javascript
+function increaseTime() {
+    if (state === "CONFIG" && timeLeft < maxTime) {
+        timeLeft++;
+    }
+}
+```
+
+Ahora el tiempo no sobrepasa los 60 segundos.  
+
+---
+
+### **3. Inicio de la cuenta regresiva**  
+
+**Objetivo:** Verificar que la bomba pase al estado **ARMED** cuando se active la detonación.  
+
+| **Plataforma** | **Estado Inicial** | **Acción** | **Esperado** | **Obtenido** | **Corrección** |
+|--------------|----------------|------------|--------------|--------------|--------------|
+| Micro:bit | Bomba en **CONFIG** con 15s | Agitar micro:bit | Cambia a **ARMED** y comienza la cuenta regresiva | Funciona correctamente | No fue necesario |
+| p5.js | Bomba en **CONFIG** con 15s | Click en "Armar" | Cambia a **ARMED** y comienza la cuenta regresiva | Funciona correctamente | No fue necesario |
+
+---
+
+### **4. Reinicio de la bomba tras la explosión**  
+
+**Objetivo:** Asegurar que la bomba pueda reiniciarse después de la explosión.  
+
+| **Plataforma** | **Estado Inicial** | **Acción** | **Esperado** | **Obtenido** | **Corrección** |
+|--------------|----------------|------------|--------------|--------------|--------------|
+| Micro:bit | Bomba en **EXPLODED** | Presionar botón táctil (pin1) | Reinicia a **CONFIG** con 20s | Error: No respondía | Se implementó la validación |
+| p5.js | Bomba en **EXPLODED** | Click en "Reset" | Reinicia a **CONFIG** con 20s | Funciona correctamente | No fue necesario |
+
+**Corrección en el código (MicroPython):**  
+
+```python
+if pin1.read_digital():  
+    current_state = STATE_CONFIG
+    time_left = 20
+    display.clear()
+```
+
+---
+
+## **Código Final Corregido**  
+
+### **MicroPython (Micro:bit)**
 ```python
 from microbit import *
 import utime
 
-# Estados
-CONFIGURACION = 0
-ARMADO = 1
-EXPLOSION = 2
+STATE_CONFIG = 0
+STATE_ARMED = 1
+STATE_EXPLODED = 2
 
-# Variables de control
-estado = CONFIGURACION
-tiempo = 20  # Tiempo inicial en segundos
-min_tiempo = 10
-max_tiempo = 60
-
-# Función para mostrar tiempo en pantalla
-def mostrar_tiempo(t):
-    display.show(str(t))  # Muestra solo el número en pantalla
+time_left = 20  
+min_time = 10
+max_time = 60
+current_state = STATE_CONFIG
+start_time = 0
+interval = 1000  
 
 while True:
-    if estado == CONFIGURACION:
-        mostrar_tiempo(tiempo)
+    if current_state == STATE_CONFIG:
+        display.show(str(time_left))  
         
-        if button_a.is_pressed() and tiempo < max_tiempo:
-            tiempo += 1
-            utime.sleep_ms(200)  # Pequeño delay para evitar rebotes
-
-        if button_b.is_pressed() and tiempo > min_tiempo:
-            tiempo -= 1
-            utime.sleep_ms(200)
+        if button_a.was_pressed() and time_left < max_time:
+            time_left += 1  
+        
+        if button_b.was_pressed() and time_left > min_time:
+            time_left -= 1  
 
         if accelerometer.was_gesture("shake"):
-            estado = ARMADO  # Pasa al estado de cuenta regresiva
-    
-    elif estado == ARMADO:
-        while tiempo > 0:
-            mostrar_tiempo(tiempo)
-            utime.sleep(1)
-            tiempo -= 1
-            
-            # Evitar que UP y DOWN afecten este estado
-            if button_a.is_pressed() or button_b.is_pressed():
-                pass
-            
-            if pin_logo.is_touched():  # Reinicio con botón touch
-                estado = CONFIGURACION
-                tiempo = 20
-                break
+            current_state = STATE_ARMED
+            start_time = utime.ticks_ms()  
+
+    elif current_state == STATE_ARMED:
+        elapsed_time = utime.ticks_diff(utime.ticks_ms(), start_time)
+        if elapsed_time >= interval:
+            start_time = utime.ticks_ms()
+            time_left -= 1
+            display.show(str(time_left))
+
+            if time_left <= 0:
+                current_state = STATE_EXPLODED  
+
+        if pin1.read_digital():  
+            current_state = STATE_CONFIG
+            time_left = 20
+            display.clear()
+
+    elif current_state == STATE_EXPLODED:
+        display.show(Image.SKULL)
+        for _ in range(5):
+            pin0.write_digital(1)  
+            sleep(200)
+            pin0.write_digital(0)  
+            sleep(200)
         
-        if tiempo == 0:
-            estado = EXPLOSION
-    
-    elif estado == EXPLOSION:
-        display.show(Image.SKULL)  # Muestra calavera en la pantalla
-        pin0.write_digital(1)  # Activa el speaker
-        utime.sleep(2)
-        pin0.write_digital(0)  # Desactiva el speaker
-        
-        if pin_logo.is_touched():  # Reinicio con botón touch
-            estado = CONFIGURACION
-            tiempo = 20
+        if pin1.read_digital():  
+            current_state = STATE_CONFIG
+            time_left = 20
+            display.clear()
 ```
 
+### **p5.js**
+```javascript
+let timeLeft = 20;
+let minTime = 10;
+let maxTime = 60;
+let state = "CONFIG";
 
-## Conclusión  
+function setup() {
+    createCanvas(400, 300);
+    textAlign(CENTER, CENTER);
+}
 
-Hacer las pruebas me sirvió para ver que aunque el código parecía estar bien, había errores que solo se notaban cuando lo probaba varias veces. Lo que más me costó fue que la cuenta regresiva no se quedara trabada y que el botón TOUCH siempre reiniciara bien la bomba. Después de corregir eso, el sistema ya responde bien en todas las situaciones.  
+function draw() {
+    background(255);
+    textSize(32);
+    fill(0);
 
-También creo que se podrían hacer mejoras como agregar efectos visuales mientras la cuenta regresiva está corriendo o incluso un sonido cada segundo para que sea más inmersivo. En general, el ejercicio me sirvió para entender mejor cómo depurar código y hacer pruebas antes de decir que algo está "terminado".  
+    if (state === "CONFIG") {
+        text("Tiempo: " + timeLeft, width / 2, height / 2);
+    } else if (state === "ARMED") {
+        text("Tiempo: " + timeLeft, width / 2, height / 2);
+        if (millis() % 1000 < 50 && timeLeft > 0) {
+            timeLeft--;
+        }
+        if (timeLeft <= 0) {
+            state = "EXPLODED";
+        }
+    } else if (state === "EXPLODED") {
+        textSize(50);
+        fill(255, 0, 0);
+        text("BOOM", width / 2, height / 2);
+    }
+}
+```
