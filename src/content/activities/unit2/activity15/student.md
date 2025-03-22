@@ -1,0 +1,7 @@
+**Reflexión Final sobre el Aprendizaje**  
+
+Durante esta unidad aprendí bastante sobre la importancia de hacer pruebas y corregir errores en los programas que uno hace, especialmente cuando se trabaja con cosas como el Micro:bit y p5.js. Al principio pensé que la parte de probar era solo ver si el código funcionaba o no, pero me di cuenta de que hay que ser más metódico, hacer pruebas específicas y verificar cada posible fallo. También entendí que no siempre es solo un error de código, sino que a veces la lógica que uno plantea puede no ser la mejor.  
+
+Algo que me pareció interesante fue cómo la misma lógica de la bomba se podía aplicar en diferentes plataformas pero con detalles que cambian dependiendo del entorno en el que se ejecuta. Por ejemplo, en MicroPython hay que manejar bien los tiempos y eventos, mientras que en p5.js hay que pensar en la interfaz y la interacción del usuario. Fue un reto asegurarse de que todo funcionara bien sin errores inesperados.  
+
+En el futuro creo que esto me va a servir mucho para cuando haga proyectos más complejos en diseño de experiencias interactivas o en juegos. Ya no veo las pruebas como algo aburrido o solo para corregir errores, sino como una forma de mejorar lo que hago y asegurarme de que funcione bien. Me gustaría seguir explorando cómo hacer pruebas más automatizadas o cómo depurar de manera más eficiente para no perder tanto tiempo buscando fallos.
