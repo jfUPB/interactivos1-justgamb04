@@ -55,7 +55,7 @@ while True:
     sleep(1000)  
 ```
 
-### **Ventajas de Usar Clases para los Semáforos**  
+### Ventajas de Usar Clases  
 
 La verdad usar clases en este caso ayuda bastante porque hace que el código sea más ordenado y fácil de manejar. En vez de estar escribiendo el código de cada semáforo por aparte, simplemente se crea una clase con todo lo necesario y después se usa varias veces sin tanto problema.  
 
@@ -63,7 +63,7 @@ Además, si en algún punto toca cambiar algo, como agregar otro estado o modifi
 
 Otro punto es que al usar clases se siente más como programar cosas de la vida real. O sea, cada semáforo es como un objeto independiente que tiene su propio tiempo y estado sin afectar a los otros. Esto hace que sea más organizado y que el programa no se enrede cuando hay varios semáforos funcionando al mismo tiempo.  
 
-### **Reflexión sobre la Técnica de Máquinas de Estado**  
+### Reflexión
 
 La idea de usar máquinas de estado es muy útil porque ayuda a que todo siga un orden lógico. Cada semáforo tiene estados específicos (rojo, amarillo, verde) y cambia entre ellos en un orden claro, lo que hace que el código sea más estructurado.  
 
