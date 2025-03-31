@@ -56,7 +56,7 @@ function serialEvent() {
   }
 }
 ```
-### **Código: micro:bit
+### Código: micro:bit
 ```python
 from microbit import *
 import utime
