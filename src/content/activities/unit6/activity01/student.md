@@ -19,7 +19,7 @@ En la terminal del servidor aparecieron mensajes tipo:
 `Cliente conectado desde /page1` y luego `Cliente conectado desde /page2`.  
 Esto indica que el servidor detectó las conexiones desde ambas páginas. También se veían logs cuando hacía movimientos o interacciones, lo que me permitió confirmar que el servidor está recibiendo eventos desde el navegador.
 
-#### Describe qué sucede en ambas páginas del navegador cuando mueves una de las ventanas. ¿Cambia algo visualmente? ¿Qué mensajes aparecen (si los hay) en la consola del navegador y en la terminal del servidor?**
+#### Describe qué sucede en ambas páginas del navegador cuando mueves una de las ventanas. ¿Cambia algo visualmente? ¿Qué mensajes aparecen (si los hay) en la consola del navegador y en la terminal del servidor?
 
 Cuando muevo la figura en una de las páginas (por ejemplo, en page1), el cambio también se ve reflejado en la otra página (page2) casi al instante. Esto significa que hay una comunicación en tiempo real entre ambas ventanas, probablemente usando sockets o algún tipo de comunicación websocket.
 
